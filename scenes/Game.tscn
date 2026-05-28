@@ -1,0 +1,150 @@
+[gd_scene load_steps=10 format=3 uid="uid://game001scene"]
+
+[ext_resource type="Script" uid="uid://b16xx0fm3rq4y" path="res://scripts/game.gd" id="1_game"]
+[ext_resource type="Script" uid="uid://celava7d20ycm" path="res://scripts/grid_manager.gd" id="2_grid"]
+[ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/player/Player.tscn" id="3_player"]
+[ext_resource type="Script" uid="uid://bnwet5qtimyag" path="res://scripts/audio/audio_manager.gd" id="4_audio"]
+[ext_resource type="Theme" uid="uid://dg1kd57cqhexk" path="res://game_theme.tres" id="5_theme"]
+[ext_resource type="Texture2D" uid="uid://ddtl0n04hjhsn" path="res://assets/ui/Setting menu.png" id="6_aug50"]
+[ext_resource type="Texture2D" uid="uid://dvkodgi53uind" path="res://assets/ui/Heart_Full_64.png" id="7_hfull"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kiw3p"]
+atlas = ExtResource("6_aug50")
+region = Rect2(138, 12, 108, 122)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_400sg"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+texture = SubResource("AtlasTexture_kiw3p")
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_game")
+
+[node name="Grid" type="Node2D" parent="."]
+script = ExtResource("2_grid")
+C_TRAIL = Color(0.997321, 0.935498, 0.831255, 1)
+C_TRAIL_BRIGHT = Color(0.996078, 0.937255, 0.831373, 0.635294)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Items" type="Node2D" parent="."]
+
+[node name="Stars" type="Node2D" parent="."]
+
+[node name="Projectiles" type="Node2D" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector2(25, 250)
+
+[node name="Audio" type="Node" parent="."]
+script = ExtResource("4_audio")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HUD" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("5_theme")
+
+[node name="TimerLabel" type="Label" parent="UI/HUD"]
+layout_mode = 1
+offset_left = 14.0
+offset_top = 10.0
+offset_right = 222.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.95, 0.92, 0.82, 1)
+theme_override_font_sizes/font_size = 36
+text = "TIME  00:00"
+
+[node name="EffectLabel" type="Label" parent="UI/HUD"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 62.0
+offset_right = 200.0
+offset_bottom = 86.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+
+[node name="PauseOverlay" type="ColorRect" parent="UI/HUD"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0392157, 0.0431373, 0, 0.192157)
+
+[node name="Panel" type="Panel" parent="UI/HUD/PauseOverlay"]
+layout_mode = 2
+offset_left = 278.0
+offset_top = 228.0
+offset_right = 517.0
+offset_bottom = 393.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_400sg")
+
+[node name="PauseBox" type="VBoxContainer" parent="UI/HUD/PauseOverlay/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -69.0
+offset_right = 100.0
+offset_bottom = 69.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("5_theme")
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="PauseTitle" type="Label" parent="UI/HUD/PauseOverlay/Panel/PauseBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_font_sizes/font_size = 28
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="ResumeBtn" type="Button" parent="UI/HUD/PauseOverlay/Panel/PauseBox"]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
+text = "RESUME"
+
+[node name="HeartsContainer" type="HBoxContainer" parent="UI/HUD"]
+layout_mode = 0
+offset_left = 688.0
+offset_top = 8.0
+offset_right = 805.0
+offset_bottom = 42.0
+
+[node name="Heart1" type="TextureRect" parent="UI/HUD/HeartsContainer"]
+layout_mode = 2
+texture = ExtResource("7_hfull")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="Heart2" type="TextureRect" parent="UI/HUD/HeartsContainer"]
+layout_mode = 2
+texture = ExtResource("7_hfull")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="Heart3" type="TextureRect" parent="UI/HUD/HeartsContainer"]
+layout_mode = 2
+texture = ExtResource("7_hfull")
+expand_mode = 2
+stretch_mode = 4

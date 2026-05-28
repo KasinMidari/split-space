@@ -1,0 +1,66 @@
+[gd_scene load_steps=11 format=3 uid="uid://c017g5yed6iyy"]
+
+[ext_resource type="Script" uid="uid://n8ghxvre06jr" path="res://scripts/enemies/shooter_enemy.gd" id="1_shoot"]
+[ext_resource type="Script" uid="uid://btm23nqyrqwac" path="res://scripts/fsm/enemy/enemy_move.gd" id="2_move"]
+[ext_resource type="Script" uid="uid://dbxyd1wil8ki7" path="res://scripts/fsm/enemy/enemy_frozen.gd" id="3_frozen"]
+[ext_resource type="Script" uid="uid://ccc354mnnpyu" path="res://scripts/fsm/enemy/enemy_dying.gd" id="4_dying"]
+[ext_resource type="Texture2D" uid="uid://bmx5vlaiy45e7" path="res://assets/sprite/Characters/Free Chicken Sprites.png" id="5_w8p5r"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o3eqg"]
+atlas = ExtResource("5_w8p5r")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nle1p"]
+atlas = ExtResource("5_w8p5r")
+region = Rect2(16, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s613g"]
+atlas = ExtResource("5_w8p5r")
+region = Rect2(32, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c2b2y"]
+atlas = ExtResource("5_w8p5r")
+region = Rect2(48, 16, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_laptd"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o3eqg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nle1p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s613g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c2b2y")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[node name="ShooterEnemy" type="Node2D"]
+script = ExtResource("1_shoot")
+fire_interval = 5.0
+speed = 30.0
+
+[node name="States" type="Node" parent="."]
+
+[node name="Move" type="Node" parent="States"]
+script = ExtResource("2_move")
+
+[node name="Frozen" type="Node" parent="States"]
+script = ExtResource("3_frozen")
+
+[node name="Dying" type="Node" parent="States"]
+script = ExtResource("4_dying")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -7)
+scale = Vector2(2.09375, 2.03125)
+sprite_frames = SubResource("SpriteFrames_laptd")
+autoplay = "default"
+frame_progress = 0.313484

@@ -1,0 +1,71 @@
+[gd_scene load_steps=12 format=3 uid="uid://basicenemy001"]
+
+[ext_resource type="Script" uid="uid://dffj45yvbg18y" path="res://scripts/enemies/basic_enemy.gd" id="1_basic"]
+[ext_resource type="Script" uid="uid://btm23nqyrqwac" path="res://scripts/fsm/enemy/enemy_move.gd" id="2_move"]
+[ext_resource type="Script" uid="uid://dbxyd1wil8ki7" path="res://scripts/fsm/enemy/enemy_frozen.gd" id="3_frozen"]
+[ext_resource type="Script" uid="uid://ccc354mnnpyu" path="res://scripts/fsm/enemy/enemy_dying.gd" id="4_dying"]
+[ext_resource type="Texture2D" uid="uid://cgnce258ggyxu" path="res://assets/sprite/Characters/Free Cow Sprites.png" id="5_gmv5o"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v3mjj"]
+atlas = ExtResource("5_gmv5o")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_spovq"]
+atlas = ExtResource("5_gmv5o")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sttp3"]
+atlas = ExtResource("5_gmv5o")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0c6jb"]
+atlas = ExtResource("5_gmv5o")
+region = Rect2(0, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4adc2"]
+atlas = ExtResource("5_gmv5o")
+region = Rect2(32, 32, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8bkml"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v3mjj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_spovq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sttp3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0c6jb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4adc2")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[node name="BasicEnemy" type="Node2D"]
+script = ExtResource("1_basic")
+speed = 40.0
+
+[node name="States" type="Node" parent="."]
+
+[node name="Move" type="Node" parent="States"]
+script = ExtResource("2_move")
+
+[node name="Frozen" type="Node" parent="States"]
+script = ExtResource("3_frozen")
+
+[node name="Dying" type="Node" parent="States"]
+script = ExtResource("4_dying")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -18)
+scale = Vector2(1.375, 1.375)
+sprite_frames = SubResource("SpriteFrames_8bkml")
+autoplay = "default"

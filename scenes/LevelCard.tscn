@@ -1,0 +1,80 @@
+[gd_scene load_steps=6 format=4 uid="uid://cbvfbfia3wmea"]
+
+[ext_resource type="Script" uid="uid://c8bnbn86ul84y" path="res://scripts/level_card.gd" id="1_card"]
+[ext_resource type="TileSet" uid="uid://djtg6a3o3mllm" path="res://scenes/resources/map.tres" id="2_l8shu"]
+[ext_resource type="Theme" uid="uid://dg1kd57cqhexk" path="res://game_theme.tres" id="3_x7p5d"]
+[ext_resource type="Texture2D" uid="uid://geygd74poh2n" path="res://assets/ui/Icons/special icons/Special Icons.png" id="4_dcvnv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t751n"]
+atlas = ExtResource("4_dcvnv")
+region = Rect2(2, 50, 12, 12)
+
+[node name="LevelCard" type="Control"]
+custom_minimum_size = Vector2(130, 110)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 130.0
+offset_bottom = 194.0
+script = ExtResource("1_card")
+
+[node name="TileMapLayer2" type="TileMapLayer" parent="."]
+position = Vector2(-1.19209e-07, 0)
+scale = Vector2(3, 3)
+tile_map_data = PackedByteArray("AAAAAAEAAwAAAAEAAAAAAAAAAwAAAAAAAAAAAAIAAwAAAAIAAAACAAAAAwACAAAAAAACAAEAAwACAAEAAAACAAIAAwACAAIAAAABAAAAAwABAAAAAAABAAEAAwABAAEAAAABAAIAAwABAAIAAAA=")
+tile_set = ExtResource("2_l8shu")
+
+[node name="TileMapLayer3" type="TileMapLayer" parent="."]
+position = Vector2(48, 6)
+scale = Vector2(3, 3)
+tile_map_data = PackedByteArray("AAAAAP//BgAIAAIAAAABAAAABgAFAAEAAAD//wIABgAFAAAAAAA=")
+tile_set = ExtResource("2_l8shu")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+offset_left = 30.0
+offset_top = 17.0
+offset_right = 118.0
+offset_bottom = 104.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Labels" type="VBoxContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="NumLabel" type="Label" parent="VBox/Labels"]
+layout_mode = 2
+theme = ExtResource("3_x7p5d")
+theme_override_font_sizes/font_size = 36
+text = "1"
+horizontal_alignment = 1
+
+[node name="BestLabel" type="Label" parent="VBox/Labels"]
+layout_mode = 2
+theme = ExtResource("3_x7p5d")
+theme_override_font_sizes/font_size = 18
+text = "0:00"
+horizontal_alignment = 1
+
+[node name="StarRate" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="Star1" type="TextureRect" parent="VBox/StarRate"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = SubResource("AtlasTexture_t751n")
+
+[node name="Star2" type="TextureRect" parent="VBox/StarRate"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = SubResource("AtlasTexture_t751n")
+
+[node name="Star3" type="TextureRect" parent="VBox/StarRate"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = SubResource("AtlasTexture_t751n")

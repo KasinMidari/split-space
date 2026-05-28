@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://proj001scene"]
+
+[ext_resource type="Script" uid="uid://dii77c4qabsbg" path="res://scripts/projectile.gd" id="1_proj"]
+[ext_resource type="Texture2D" uid="uid://dnparh1voyqv" path="res://assets/sprite/Characters/Egg_And_Nest.png" id="2_vihyi"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kdm4f"]
+atlas = ExtResource("2_vihyi")
+region = Rect2(4, 6, 8, 8)
+
+[node name="Projectile" type="Node2D"]
+script = ExtResource("1_proj")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(1.375, 1.5)
+texture = SubResource("AtlasTexture_kdm4f")

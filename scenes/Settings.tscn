@@ -1,0 +1,127 @@
+[gd_scene load_steps=6 format=3 uid="uid://cqdybqi2jxa6m"]
+
+[ext_resource type="Script" uid="uid://bah65vi375liq" path="res://scripts/ui/settings_menu.gd" id="1_settings"]
+[ext_resource type="Texture2D" uid="uid://ddtl0n04hjhsn" path="res://assets/ui/Setting menu.png" id="2_46duy"]
+[ext_resource type="Theme" uid="uid://dg1kd57cqhexk" path="res://game_theme.tres" id="2_theme"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1dggd"]
+atlas = ExtResource("2_46duy")
+region = Rect2(10, 12, 108, 122)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8e7v8"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+texture = SubResource("AtlasTexture_1dggd")
+expand_margin_left = 20.0
+expand_margin_top = 140.0
+expand_margin_right = 20.0
+expand_margin_bottom = 20.0
+
+[node name="SettingsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_settings")
+
+[node name="Dim" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.0941176)
+
+[node name="Card" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -164.0
+offset_top = -71.0
+offset_right = 258.0
+offset_bottom = 206.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_8e7v8")
+
+[node name="Content" type="VBoxContainer" parent="Card"]
+layout_mode = 2
+theme = ExtResource("2_theme")
+theme_override_constants/separation = 12
+
+[node name="SfxRow" type="HBoxContainer" parent="Card/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SfxLabel" type="Label" parent="Card/Content/SfxRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "SFX"
+
+[node name="SfxSlider" type="HSlider" parent="Card/Content/SfxRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_theme")
+value = 80.0
+
+[node name="MusicRow" type="HBoxContainer" parent="Card/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MusicLabel" type="Label" parent="Card/Content/MusicRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "MUSIC"
+
+[node name="MusicSlider" type="HSlider" parent="Card/Content/MusicRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+value = 80.0
+
+[node name="MuteRow" type="HBoxContainer" parent="Card/Content"]
+layout_mode = 2
+
+[node name="MuteLabel" type="Label" parent="Card/Content/MuteRow"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "MUTE"
+
+[node name="MuteCheck" type="CheckBox" parent="Card/Content/MuteRow"]
+layout_mode = 2
+
+[node name="FullscreenRow" type="HBoxContainer" parent="Card/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="FullscreenLabel" type="Label" parent="Card/Content/FullscreenRow"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "FULL SCREEN"
+
+[node name="FullscreenCheck" type="CheckBox" parent="Card/Content/FullscreenRow"]
+layout_mode = 2
+
+[node name="BackBtn" type="Button" parent="Card/Content"]
+custom_minimum_size = Vector2(150, 56)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme = ExtResource("2_theme")
+theme_override_font_sizes/font_size = 36
+text = "BACK"
