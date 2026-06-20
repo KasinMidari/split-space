@@ -256,19 +256,61 @@ func _on_trail_closed() -> void:
 		AudioManager.play_cut()
 	if cut_cells.size() > 6:
 		AudioManager.play_big_cut()
+
+	# Xóa tile decoration foreground (z_index >= 0) ở vùng vừa cắt
+	# Background như Water (z_index < 0) giữ nguyên
+	for deco in _tm_decorations:
+		if is_instance_valid(deco) and deco.z_index >= 0:
+			for cell in cut_cells:
+				deco.erase_cell(cell)
+
 	for e in _enemies.duplicate():
 		if not is_instance_valid(e) or not e.alive:
 			continue
-		var enclosed := _grid.is_enemy_enclosed(e.get_grid_pos())
+		var gp = e.get_grid_pos()
+		var enclosed := _grid.is_enemy_enclosed(gp)
 		if not enclosed and cut_cells.size() > 0:
-			enclosed = cut_cells.size() > _grid.get_connected_active_size(e.get_grid_pos())
+			enclosed = cut_cells.size() > _grid.get_connected_active_size(gp)
+		if not enclosed:
+			enclosed = _is_enemy_isolated(e, gp)
 		if enclosed:
 			AudioManager.play_enemy_die()
 			if e is EnemyBase:
 				(e as EnemyBase).die()
 			elif e is RestorerEnemy:
 				(e as RestorerEnemy).die()
+
+	# Sau khi kill xong, capture các vùng T_ACTIVE còn trống (không có enemy nào)
+	var alive_ep: Array = []
+	for e in _enemies:
+		if is_instance_valid(e) and e.alive:
+			alive_ep.append(e.get_grid_pos())
+	var extra_cells: Array = _grid.capture_empty_pockets(alive_ep)
+	for deco in _tm_decorations:
+		if is_instance_valid(deco) and deco.z_index >= 0:
+			for cell in extra_cells:
+				deco.erase_cell(cell)
+
 	_check_win()
+
+func _is_enemy_isolated(enemy: Node, gp: Vector2i) -> bool:
+	if _grid.get_tile(gp.x, gp.y) != GridManager.T_ACTIVE:
+		return false
+	var visited: Dictionary = {gp: true}
+	var queue: Array = [gp]
+	while not queue.is_empty():
+		var cur: Vector2i = queue.pop_front()
+		for d in [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]:
+			var nb = cur + d
+			if nb not in visited and _grid.get_tile(nb.x, nb.y) == GridManager.T_ACTIVE:
+				visited[nb] = true
+				queue.append(nb)
+	for other in _enemies:
+		if not is_instance_valid(other) or not other.alive or other == enemy:
+			continue
+		if other.get_grid_pos() in visited:
+			return false  # có enemy khác cùng vùng → không cô lập
+	return true
 
 func _on_self_intersect() -> void:
 	if not _player.is_invincible:
