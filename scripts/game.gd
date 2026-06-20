@@ -35,7 +35,7 @@ var _tm_decorations: Array[TileMapLayer] = []
 @onready var _item_container: Node2D   = $Items
 @onready var _star_container: Node2D   = $Stars
 @onready var _proj_container: Node2D   = $Projectiles
-@onready var _audio: AudioManager      = $Audio
+
 
 @onready var _timer_label: Label  = $UI/HUD/TimerLabel
 @onready var _effect_label: Label = $UI/HUD/EffectLabel
@@ -253,9 +253,9 @@ func _on_trail_closed() -> void:
 
 	var cut_cells: Array = _grid.perform_fill(ep)
 	if cut_cells.size() > 0:
-		_audio.play_cut()
+		AudioManager.play_cut()
 	if cut_cells.size() > 6:
-		_audio.play_big_cut()
+		AudioManager.play_big_cut()
 	for e in _enemies.duplicate():
 		if not is_instance_valid(e) or not e.alive:
 			continue
@@ -263,7 +263,7 @@ func _on_trail_closed() -> void:
 		if not enclosed and cut_cells.size() > 0:
 			enclosed = cut_cells.size() > _grid.get_connected_active_size(e.get_grid_pos())
 		if enclosed:
-			_audio.play_enemy_die()
+			AudioManager.play_enemy_die()
 			if e is EnemyBase:
 				(e as EnemyBase).die()
 			elif e is RestorerEnemy:
@@ -278,7 +278,7 @@ func _on_self_intersect() -> void:
 func _on_player_hit() -> void:
 	if _game_over:
 		return
-	_audio.play_die()
+	AudioManager.play_die()
 	_grid.clear_trail()
 	_lives -= 1
 	_update_hud()
@@ -322,7 +322,7 @@ func _remove_proj(p: Projectile) -> void:
 func _on_star_collected(star: StarCollectible) -> void:
 	_stars.erase(star)
 	_stars_collected += 1
-	_audio.play_item()
+	AudioManager.play_item()
 	_update_hud()
 	if is_instance_valid(star):
 		star.queue_free()
@@ -375,13 +375,13 @@ func _find_item_pos() -> Vector2i:
 
 func _on_item_collected(item: ItemBase) -> void:
 	_items.erase(item)
-	_audio.play_item()
+	AudioManager.play_item()
 	match item.item_type:
 		"invincibility": _player.apply_invincibility(3.0)
 		"speed":         _player.apply_speed(5.0)
 		"freeze":
 			_freeze_all(1.5)
-			_audio.play_freeze()
+			AudioManager.play_freeze()
 	item.queue_free()
 
 func _freeze_all(dur: float) -> void:
@@ -418,7 +418,6 @@ func _check_win() -> void:
 		return
 	if _count_alive() == 0:
 		_game_over = true
-		_audio.play_win()
 		await get_tree().create_timer(1.5).timeout
 		_go_result(true)
 

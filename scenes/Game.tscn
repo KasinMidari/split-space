@@ -1,9 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://game001scene"]
+[gd_scene load_steps=9 format=3 uid="uid://game001scene"]
 
 [ext_resource type="Script" uid="uid://b16xx0fm3rq4y" path="res://scripts/game.gd" id="1_game"]
 [ext_resource type="Script" uid="uid://celava7d20ycm" path="res://scripts/grid_manager.gd" id="2_grid"]
 [ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/player/Player.tscn" id="3_player"]
-[ext_resource type="Script" uid="uid://bnwet5qtimyag" path="res://scripts/audio/audio_manager.gd" id="4_audio"]
 [ext_resource type="Theme" uid="uid://dg1kd57cqhexk" path="res://game_theme.tres" id="5_theme"]
 [ext_resource type="Texture2D" uid="uid://ddtl0n04hjhsn" path="res://assets/ui/Setting menu.png" id="6_aug50"]
 [ext_resource type="Texture2D" uid="uid://dvkodgi53uind" path="res://assets/ui/Heart_Full_64.png" id="7_hfull"]
@@ -37,9 +36,6 @@ C_TRAIL_BRIGHT = Color(0.996078, 0.937255, 0.831373, 0.635294)
 
 [node name="Player" parent="." instance=ExtResource("3_player")]
 position = Vector2(25, 250)
-
-[node name="Audio" type="Node" parent="."]
-script = ExtResource("4_audio")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

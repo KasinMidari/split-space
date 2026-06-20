@@ -33,15 +33,23 @@ func _ready() -> void:
 	else:
 		_best_label.visible = false
 
+	if won:
+		AudioManager.play_win()
+	else:
+		AudioManager.play_lose()
+
 	_next_btn.visible = won and GameState.is_unlocked(level + 1)
 	_next_btn.pressed.connect(func():
+		AudioManager.play_click()
 		GameState.current_level = level + 1
 		get_tree().change_scene_to_file("res://scenes/Game.tscn")
 	)
 	_retry_btn.pressed.connect(func():
+		AudioManager.play_click()
 		GameState.current_level = level
 		get_tree().change_scene_to_file("res://scenes/Game.tscn")
 	)
 	_lvl_btn.pressed.connect(func():
+		AudioManager.play_click()
 		get_tree().change_scene_to_file("res://scenes/LevelSelect.tscn")
 	)
