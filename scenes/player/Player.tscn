@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dcdgeqygkkrxi" path="res://scenes/player/player.gd" id="1_4kuee"]
 [ext_resource type="Script" uid="uid://ct5rtxks68bnj" path="res://scenes/player/idle.gd" id="3_c3xxp"]
-[ext_resource type="Script" uid="uid://bkxh2lxatxrq6" path="res://scenes/player/states/player_dead.gd" id="3_tpg5x"]
+[ext_resource type="Script" uid="uid://bkxh2lxatxrq6" path="res://scenes/player/states/dead.gd" id="3_tpg5x"]
 [ext_resource type="Script" uid="uid://cqcq7m18k7nad" path="res://scenes/player/move.gd" id="4_npwbq"]
 [ext_resource type="Script" uid="uid://cuyq1fjpu3cgn" path="res://scenes/player/states/player_hurt.gd" id="5_hurt"]
 [ext_resource type="Texture2D" uid="uid://6xw65u4ixw50" path="res://assets/sprite/Characters/Basic Charakter Spritesheet.png" id="5_v42im"]

@@ -7,6 +7,7 @@ extends Control
 
 func _ready() -> void:
 	_back_btn.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/MainMenu.tscn"))
+	_back_btn.pressed.connect(func(): AudioManager.play_click())
 	_populate_levels()
 
 func _populate_levels() -> void:
@@ -19,5 +20,6 @@ func _populate_levels() -> void:
 		card.card_clicked.connect(_start_level)
 
 func _start_level(id: int) -> void:
+	AudioManager.play_click()
 	GameState.current_level = id
 	get_tree().change_scene_to_file("res://scenes/Game.tscn")
