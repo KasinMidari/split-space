@@ -259,6 +259,35 @@ func is_enemy_enclosed(gp: Vector2i) -> bool:
 				queue.append(nb)
 	return true  # không thể reach border → bị bao vây
 
+# Capture mọi vùng T_ACTIVE không còn enemy nào (pocket trống sau khi kill)
+func capture_empty_pockets(alive_enemy_positions: Array) -> Array:
+	var reachable: Dictionary = {}
+	var queue: Array = []
+	for ep in alive_enemy_positions:
+		var gp := Vector2i(ep.x, ep.y)
+		if get_tile(gp.x, gp.y) == T_ACTIVE and gp not in reachable:
+			reachable[gp] = true
+			queue.append(gp)
+	while not queue.is_empty():
+		var cur: Vector2i = queue.pop_front()
+		for d in [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]:
+			var nb = cur + d
+			if nb not in reachable and get_tile(nb.x, nb.y) == T_ACTIVE:
+				reachable[nb] = true
+				queue.append(nb)
+	var captured: Array = []
+	for y in range(rows):
+		for x in range(cols):
+			if _grid[_idx(x, y)] == T_ACTIVE and Vector2i(x, y) not in reachable:
+				_grid[_idx(x, y)] = T_CUT
+				captured.append(Vector2i(x, y))
+	if not captured.is_empty():
+		_recalc_active()
+		if _has_tilemaps:
+			_refresh_tilemaps()
+		queue_redraw()
+	return captured
+
 func restore_tile(x: int, y: int) -> void:
 	if get_tile(x, y) == T_CUT:
 		_grid[_idx(x, y)] = T_ACTIVE
