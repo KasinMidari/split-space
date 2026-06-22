@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="AudioDatabase" load_steps=7 format=3 uid="uid://gd0clmawwx5m"]
+
+[ext_resource type="Script" uid="uid://dfff0ka3bme2v" path="res://scripts/audio/audio_database.gd" id="1_db"]
+[ext_resource type="Script" uid="uid://d1hrbwnoxxrcg" path="res://scripts/audio/audio_entry.gd" id="1_mh50e"]
+[ext_resource type="AudioStream" uid="uid://dw5ia0htnmp74" path="res://assets/audio/bgm/makiyoshida_art-under-the-blooms-cute-cat-marimba-rhythm-535821.mp3" id="2_u6wrp"]
+[ext_resource type="AudioStream" uid="uid://c14hwa0rdkec0" path="res://assets/audio/sfx/mixkit-game-ball-tap-2073.ogg" id="3_u6wrp"]
+
+[sub_resource type="Resource" id="Resource_yxcrx"]
+script = ExtResource("1_mh50e")
+id = &"main"
+type = 0
+stream = ExtResource("2_u6wrp")
+loop = true
+volume_db = 0.0
+metadata/_custom_type_script = "uid://d1hrbwnoxxrcg"
+
+[sub_resource type="Resource" id="Resource_ab8pq"]
+script = ExtResource("1_mh50e")
+id = &"click"
+type = 1
+stream = ExtResource("3_u6wrp")
+loop = false
+volume_db = 0.0
+metadata/_custom_type_script = "uid://d1hrbwnoxxrcg"
+
+[resource]
+script = ExtResource("1_db")
+entries = Array[ExtResource("1_mh50e")]([SubResource("Resource_yxcrx"), SubResource("Resource_ab8pq")])

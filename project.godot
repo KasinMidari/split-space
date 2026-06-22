@@ -14,12 +14,14 @@ config/name="Split-Space"
 run/main_scene="res://scenes/MainMenu.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
+run/drop_files=true
 
 [autoload]
 
 GameState="*res://scripts/autoload/game_state.gd"
 GameManager="*res://scripts/core/game_manager.gd"
 Settings="*res://scripts/autoload/settings.gd"
+AudioManager="*res://scripts/audio/audio_manager.gd"
 
 [display]
 

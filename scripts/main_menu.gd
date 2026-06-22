@@ -15,6 +15,8 @@ func _ready() -> void:
 	_how_btn.pressed.connect(_on_how_to_play)
 	_settings_btn.pressed.connect(func(): _open_settings(false))
 	_quit_btn.pressed.connect(func(): get_tree().quit())
+	for btn in [_play_btn, _how_btn, _settings_btn, _quit_btn]:
+		btn.pressed.connect(func(): AudioManager.play_click())
 	_gen_stars()
 
 func _gen_stars() -> void:
