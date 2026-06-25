@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://itemfreeze001"]
+[gd_scene load_steps=2 format=3 uid="uid://3ku8njvu0aii"]
 
 [ext_resource type="Script" uid="uid://8pim5brocf1p" path="res://scripts/items/item_freeze.gd" id="1_freeze"]
 

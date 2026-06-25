@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://iteminvinc001"]
+[gd_scene load_steps=2 format=3 uid="uid://3kvcj10ixaii"]
 
 [ext_resource type="Script" uid="uid://c435el0e78rig" path="res://scripts/items/item_invincibility.gd" id="1_invinc"]
 

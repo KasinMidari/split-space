@@ -1,6 +1,58 @@
-[gd_scene load_steps=2 format=3 uid="uid://itemstar001"]
+[gd_scene load_steps=7 format=3 uid="uid://itemstar001"]
 
-[ext_resource type="Script" path="res://scripts/items/item_star.gd" id="1_star"]
+[ext_resource type="Script" uid="uid://yrlfublciuoe" path="res://scripts/items/item_star.gd" id="1_star"]
+[ext_resource type="Texture2D" uid="uid://geygd74poh2n" path="res://assets/ui/Icons/special icons/Special Icons.png" id="2_ynuw1"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o7rec"]
+atlas = ExtResource("2_ynuw1")
+region = Rect2(2, 18, 12, 12)
+
+[sub_resource type="Animation" id="Animation_o7rec"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_ynuw1"]
+resource_name = "float"
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1.5, 0.5),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 5)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wbryk"]
+_data = {
+&"RESET": SubResource("Animation_o7rec"),
+&"float": SubResource("Animation_ynuw1")
+}
 
 [node name="ItemStar" type="Node2D"]
 script = ExtResource("1_star")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2.12798, 2.21392)
+texture = SubResource("AtlasTexture_o7rec")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_wbryk")
+}
+autoplay = "float"

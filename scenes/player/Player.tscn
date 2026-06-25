@@ -1,9 +1,10 @@
-[gd_scene load_steps=23 format=3 uid="uid://player001"]
+[gd_scene load_steps=24 format=3 uid="uid://player001"]
 
 [ext_resource type="Script" uid="uid://dcdgeqygkkrxi" path="res://scenes/player/player.gd" id="1_4kuee"]
 [ext_resource type="Script" uid="uid://ct5rtxks68bnj" path="res://scenes/player/idle.gd" id="3_c3xxp"]
 [ext_resource type="Script" uid="uid://bkxh2lxatxrq6" path="res://scenes/player/states/player_dead.gd" id="3_tpg5x"]
 [ext_resource type="Script" uid="uid://cqcq7m18k7nad" path="res://scenes/player/move.gd" id="4_npwbq"]
+[ext_resource type="Script" uid="uid://cuyq1fjpu3cgn" path="res://scenes/player/states/player_hurt.gd" id="5_hurt"]
 [ext_resource type="Texture2D" uid="uid://6xw65u4ixw50" path="res://assets/sprite/Characters/Basic Charakter Spritesheet.png" id="5_v42im"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pn6s4"]
@@ -163,11 +164,15 @@ animations = [{
 
 [node name="Player" type="Node2D"]
 script = ExtResource("1_4kuee")
+spawn_grid_pos = Vector2i(2, 9)
 
 [node name="States" type="Node" parent="."]
 
 [node name="Dead" type="Node" parent="States"]
 script = ExtResource("3_tpg5x")
+
+[node name="Hurt" type="Node" parent="States"]
+script = ExtResource("5_hurt")
 
 [node name="Idle" type="Node" parent="States"]
 script = ExtResource("3_c3xxp")
@@ -180,4 +185,5 @@ metadata/_custom_type_script = "uid://ch8qfmkqfqnyl"
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(1.95866, 1.92884)
 sprite_frames = SubResource("SpriteFrames_kvwax")
-animation = &"idle_left"
+animation = &"idle_down"
+frame_progress = 0.877347

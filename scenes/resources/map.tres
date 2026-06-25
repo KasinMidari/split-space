@@ -281,6 +281,7 @@ texture = ExtResource("3_g2mib")
 5:1/0 = 0
 5:1/0/terrain_set = 0
 5:1/0/terrain = 1
+5:1/0/terrains_peering_bit/right_side = 1
 5:1/0/terrains_peering_bit/bottom_side = 1
 5:1/0/terrains_peering_bit/bottom_left_corner = 1
 5:1/0/terrains_peering_bit/left_side = 1
@@ -293,6 +294,7 @@ texture = ExtResource("3_g2mib")
 6:1/0/terrains_peering_bit/right_side = 1
 6:1/0/terrains_peering_bit/bottom_right_corner = 1
 6:1/0/terrains_peering_bit/bottom_side = 1
+6:1/0/terrains_peering_bit/left_side = 1
 6:1/0/terrains_peering_bit/top_left_corner = 1
 6:1/0/terrains_peering_bit/top_side = 1
 6:1/0/terrains_peering_bit/top_right_corner = 1
@@ -498,6 +500,7 @@ texture = ExtResource("3_g2mib")
 7:8/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8uoat"]
+resource_name = "bridge"
 texture = ExtResource("4_lrltw")
 0:0/0 = 0
 1:0/0 = 0
@@ -513,6 +516,7 @@ texture = ExtResource("4_lrltw")
 1:2/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_c5dw7"]
+resource_name = "decor"
 texture = ExtResource("6_3chue")
 0:0/0 = 0
 1:0/0 = 0
@@ -561,6 +565,7 @@ texture = ExtResource("6_3chue")
 8:4/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lrltw"]
+resource_name = "plant"
 texture = ExtResource("5_ocqjd")
 1:0/animation_columns = 4
 1:0/animation_frame_0/duration = 0.3

@@ -1,11 +1,32 @@
-[gd_scene load_steps=6 format=3 uid="uid://restenemy001"]
+[gd_scene load_steps=9 format=3 uid="uid://restenemy001"]
 
 [ext_resource type="Script" uid="uid://b85ctbosg6ask" path="res://scripts/enemies/restorer_enemy.gd" id="1_rest"]
 [ext_resource type="Script" uid="uid://btm23nqyrqwac" path="res://scripts/fsm/enemy/enemy_move.gd" id="2_move"]
 [ext_resource type="Script" uid="uid://dbxyd1wil8ki7" path="res://scripts/fsm/enemy/enemy_frozen.gd" id="3_frozen"]
 [ext_resource type="Script" uid="uid://ccc354mnnpyu" path="res://scripts/fsm/enemy/enemy_dying.gd" id="4_dying"]
+[ext_resource type="Texture2D" uid="uid://dma7vc4fsv17x" path="res://assets/sprite/Characters/Chipmunk.png" id="5_dq1h1"]
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_n0dog"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_bl7ww"]
+atlas = ExtResource("5_dq1h1")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ywmaw"]
+atlas = ExtResource("5_dq1h1")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_pwefm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bl7ww")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ywmaw")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
 
 [node name="RestorerEnemy" type="Node2D"]
 script = ExtResource("1_rest")
@@ -23,4 +44,8 @@ script = ExtResource("3_frozen")
 script = ExtResource("4_dying")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-sprite_frames = SubResource("SpriteFrames_n0dog")
+position = Vector2(0, -13.2)
+scale = Vector2(2.075, 1.975)
+sprite_frames = SubResource("SpriteFrames_pwefm")
+autoplay = "default"
+frame_progress = 0.843958

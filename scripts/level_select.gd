@@ -15,7 +15,7 @@ func _populate_levels() -> void:
 		var cfg := LevelData.get_level(id)
 		var card: LevelCard = LEVEL_CARD.instantiate()
 		_level_grid.add_child(card)
-		card.setup(id, cfg.get("name", "Level %d" % id), GameState.is_unlocked(id), GameState.best_time(id))
+		card.setup(id, cfg.get("name", "Level %d" % id), GameState.is_unlocked(id), GameState.best_time(id), GameState.get_best_stars(id))
 		card.card_clicked.connect(_start_level)
 
 func _start_level(id: int) -> void:

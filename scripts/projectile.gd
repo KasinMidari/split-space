@@ -30,6 +30,9 @@ func _process(delta: float) -> void:
 		return
 	_move(delta)
 	position = pixel_pos
+	if _is_off_screen():
+		emit_signal("expired")
+		return
 	queue_redraw()
 
 func _move(delta: float) -> void:
@@ -42,8 +45,7 @@ func _move(delta: float) -> void:
 		var cx := new_pos.x + (half if velocity.x > 0.0 else -half)
 		var gx := int((cx - off.x) / ts)
 		var gy := int((pixel_pos.y - off.y) / ts)
-		var t := _gm.get_tile(gx, gy)
-		if t == GridManager.T_BORDER or t == GridManager.T_CUT:
+		if _gm.get_tile(gx, gy) == GridManager.T_CUT:
 			velocity.x = -velocity.x
 			new_pos.x = pixel_pos.x
 
@@ -51,12 +53,18 @@ func _move(delta: float) -> void:
 		var gx2 := int((new_pos.x - off.x) / ts)
 		var cy := new_pos.y + (half if velocity.y > 0.0 else -half)
 		var gy2 := int((cy - off.y) / ts)
-		var t2 := _gm.get_tile(gx2, gy2)
-		if t2 == GridManager.T_BORDER or t2 == GridManager.T_CUT:
+		if _gm.get_tile(gx2, gy2) == GridManager.T_CUT:
 			velocity.y = -velocity.y
 			new_pos.y = pixel_pos.y
 
 	pixel_pos = new_pos
+
+func _is_off_screen() -> bool:
+	var vp_size := get_viewport().get_visible_rect().size
+	var screen_pos := get_viewport_transform() * global_position
+	var margin := float(_tile_size) * 3.0
+	return screen_pos.x < -margin or screen_pos.x > vp_size.x + margin \
+		or screen_pos.y < -margin or screen_pos.y > vp_size.y + margin
 
 func check_player(player_world: Vector2) -> bool:
 	if pixel_pos.distance_to(player_world) < _tile_size * 0.55:
