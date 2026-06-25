@@ -2,6 +2,9 @@ extends Node2D
 
 const MAX_ITEMS_ALIVE := 3
 const TOTAL_STARS := 3
+# Vùng ruột bị bao phải đạt tối thiểu bấy nhiêu ô mỗi chiều mới được cắt.
+# Tăng lên 3 nếu muốn chặn cả dải dày 2 ô.
+const MIN_CUT_SIZE := 2
 const LEVEL_SCENE_BASE := "res://scenes/levels/Level%d.tscn"
 
 const _PROJECTILE     := preload("res://scenes/Projectile.tscn")
@@ -268,9 +271,20 @@ func _on_trail_closed() -> void:
 	for e in _enemies:
 		if is_instance_valid(e) and e.alive:
 			ep.append(e.get_grid_pos())
-	if _grid.preview_enclosed_count(ep) > 1:
+	var enclosed_count := _grid.preview_enclosed_count(ep)
+	if enclosed_count > 1:
 		_grid.clear_trail()
 		return
+
+	# Khi cú cắt KHÔNG giết enemy nào: chặn nếu vùng cắt quá mỏng (một chiều
+	# < MIN_CUT_SIZE). Vùng cắt = đất bắt được; nếu không bắt đất nào thì xét
+	# chính đường trail (vd kẻ thẳng ra biên tạo dải rộng/cao 1 ô).
+	# Nếu có giết enemy (enclosed_count >= 1) thì luôn cho cắt.
+	if enclosed_count == 0:
+		var cut_size: Vector2i = _grid.preview_cut_size(ep)
+		if cut_size.x < MIN_CUT_SIZE or cut_size.y < MIN_CUT_SIZE:
+			_grid.clear_trail()
+			return
 
 	var cut_cells: Array = _grid.perform_fill(ep)
 	if cut_cells.size() > 0:
@@ -289,7 +303,7 @@ func _on_trail_closed() -> void:
 		if not is_instance_valid(e) or not e.alive:
 			continue
 		var gp = e.get_grid_pos()
-		var enclosed := _grid.is_enemy_enclosed(gp)
+		var enclosed = _grid.is_enemy_enclosed(gp)
 		if not enclosed and cut_cells.size() > 0:
 			enclosed = cut_cells.size() > _grid.get_connected_active_size(gp)
 		if not enclosed:

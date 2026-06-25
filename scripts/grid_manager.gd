@@ -167,6 +167,49 @@ func perform_fill(enemy_grid_positions: Array) -> Array:
 	queue_redraw()
 	return cut_cells
 
+# Tính kích thước (cột × hàng) của vùng cắt khi chốt trail.
+# Ưu tiên đo phần ĐẤT bị bắt = ô T_ACTIVE không enemy nào với tới (giống cut_cells
+# của perform_fill), KHÔNG tính đường trail. Nếu không bắt được đất nào (vd kẻ
+# thẳng ra biên) thì đo CHÍNH đường trail vì nó vẫn sẽ thành tường.
+# KHÔNG thay đổi grid. Trả về Vector2i.ZERO nếu rỗng hoàn toàn.
+func preview_cut_size(enemy_grid_positions: Array) -> Vector2i:
+	# BFS reachable từ các enemy qua T_ACTIVE (T_TRAIL = tường tạm), giống perform_fill.
+	var reachable: Dictionary = {}
+	var queue: Array = []
+	for ep in enemy_grid_positions:
+		var gp := Vector2i(ep.x, ep.y)
+		if get_tile(gp.x, gp.y) == T_ACTIVE and gp not in reachable:
+			reachable[gp] = true
+			queue.append(gp)
+	while not queue.is_empty():
+		var cur: Vector2i = queue.pop_front()
+		for d in [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]:
+			var nb = cur + d
+			if nb not in reachable and get_tile(nb.x, nb.y) == T_ACTIVE:
+				reachable[nb] = true
+				queue.append(nb)
+
+	# cut_cells = ô T_ACTIVE không reachable → phần đất bị bắt (KHÔNG gồm trail).
+	var min_x := cols
+	var min_y := rows
+	var max_x := -1
+	var max_y := -1
+	for y in range(rows):
+		for x in range(cols):
+			if _grid[_idx(x, y)] == T_ACTIVE and Vector2i(x, y) not in reachable:
+				min_x = mini(min_x, x); max_x = maxi(max_x, x)
+				min_y = mini(min_y, y); max_y = maxi(max_y, y)
+
+	# Không bắt được đất nào → đo chính đường trail (vẫn sẽ thành tường).
+	if max_x < 0:
+		for t in _trail:
+			min_x = mini(min_x, t.x); max_x = maxi(max_x, t.x)
+			min_y = mini(min_y, t.y); max_y = maxi(max_y, t.y)
+
+	if max_x < 0:
+		return Vector2i.ZERO
+	return Vector2i(max_x - min_x + 1, max_y - min_y + 1)
+
 # Đếm số enemy bị bao mà không thay đổi grid (trail đang là T_TRAIL = tường tạm).
 func preview_enclosed_count(enemy_grid_positions: Array) -> int:
 	# Collective BFS from all enemies through T_ACTIVE (T_TRAIL acts as wall)
