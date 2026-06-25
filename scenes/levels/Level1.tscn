@@ -1,10 +1,8 @@
-[gd_scene load_steps=6 format=4 uid="uid://level001"]
+[gd_scene load_steps=4 format=4 uid="uid://level001"]
 
 [ext_resource type="Script" uid="uid://cgwrbj0jlmv78" path="res://scripts/levels/level_config.gd" id="1_cfg"]
 [ext_resource type="TileSet" uid="uid://djtg6a3o3mllm" path="res://scenes/resources/map.tres" id="2_map"]
 [ext_resource type="PackedScene" uid="uid://basicenemy001" path="res://scenes/enemies/BasicEnemy.tscn" id="3_x4si1"]
-[ext_resource type="PackedScene" uid="uid://c017g5yed6iyy" path="res://scenes/enemies/ShooterEnemy.tscn" id="4_68ib6"]
-[ext_resource type="PackedScene" uid="uid://restenemy001" path="res://scenes/enemies/RestorerEnemy.tscn" id="4_fh0io"]
 
 [node name="Level1Config" type="Node"]
 script = ExtResource("1_cfg")
@@ -44,15 +42,3 @@ position = Vector2(544, 238)
 
 [node name="BasicEnemy3" parent="." instance=ExtResource("3_x4si1")]
 position = Vector2(262, 425)
-
-[node name="ShooterEnemy" parent="." instance=ExtResource("4_68ib6")]
-position = Vector2(358, 300)
-
-[node name="ShooterEnemy2" parent="." instance=ExtResource("4_68ib6")]
-position = Vector2(436, 160)
-
-[node name="RestorerEnemy" parent="." instance=ExtResource("4_fh0io")]
-position = Vector2(217, 244)
-
-[node name="RestorerEnemy2" parent="." instance=ExtResource("4_fh0io")]
-position = Vector2(555, 330)
