@@ -51,10 +51,12 @@ func bind_tilemaps(active: TileMapLayer, border: TileMapLayer, cut: TileMapLayer
 	active.z_index = -1
 	border.z_index = -1
 	cut.z_index = -1
-	# Đọc tile_size từ TileSet.tile_size * scale của layer TileActive.
-	# Ví dụ: TileSet có tile 16x16, scale=(2,2) → tile_size = 32.
-	if active.tile_set:
-		tile_size = roundi(active.tile_set.tile_size.x * active.scale.x)
+	# Đọc tile_size từ TileSet.tile_size * scale của layer Border (terrain luôn
+	# hiển thị → là chuẩn căn ô). Nếu thiếu Border thì fallback sang Active.
+	# Ví dụ: TileSet có tile 16x16, scale=(1.5,1.5) → tile_size = 24.
+	var ref: TileMapLayer = border if border != null else active
+	if ref != null and ref.tile_set:
+		tile_size = roundi(ref.tile_set.tile_size.x * ref.scale.x)
 
 func setup(c: int, r: int) -> void:
 	cols = c

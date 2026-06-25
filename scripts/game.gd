@@ -17,6 +17,7 @@ var _level_cfg: Dictionary = {}
 var _level_spawns: Array = []
 
 var _elapsed: float = 0.0
+var _time_limit: float = 90.0
 var _item_timer: float = 0.0
 var _game_over: bool = false
 var _paused_internal: bool = false
@@ -44,6 +45,7 @@ var _tm_decorations: Array[TileMapLayer] = []
 @onready var _heart3: TextureRect = $UI/HUD/HeartsContainer/Heart3
 @onready var _pause_panel: ColorRect = $UI/HUD/PauseOverlay
 @onready var _resume_btn: Button  = $UI/HUD/PauseOverlay/Panel/PauseBox/ResumeBtn
+@onready var _settings_btn: TextureButton = $UI/HUD/SettingsBtn
 
 var _enemies: Array = []
 var _projectiles: Array = []
@@ -53,6 +55,7 @@ var _settings_ui: Node = null
 
 func _ready() -> void:
 	_resume_btn.pressed.connect(func(): _toggle_pause())
+	_settings_btn.pressed.connect(_on_settings_pressed)
 	_player.trail_started.connect(_on_trail_started)
 	_player.trail_extended.connect(_on_trail_extended)
 	_player.trail_closed.connect(_on_trail_closed)
@@ -70,6 +73,7 @@ func start_level(level_id: int) -> void:
 	_spawn_enemies()
 	_spawn_stars()
 	_elapsed = 0.0
+	_time_limit = _level_cfg.get("time_limit", 90.0)
 	_item_timer = _level_cfg.get("item_interval", 15.0)
 	_game_over = false
 	_paused_internal = false
@@ -106,6 +110,12 @@ func _load_level_scene(level_id: int) -> void:
 				inst.remove_child(active)
 				_grid.add_child(active)
 				_tm_active = active
+				# Ép layer Active trùng scale/position với Border. Một số level
+				# cấu hình Active sai scale (vd Level1=0.5) khiến trail & terrain
+				# lệch ô. Border là chuẩn hiển thị nên các layer phải khớp nó.
+				if border != null:
+					_tm_active.scale = border.scale
+					_tm_active.position = border.position
 			for deco in cfg.get_decoration_layers():
 				inst.remove_child(deco)
 				_grid.add_child(deco)
@@ -116,12 +126,16 @@ func _load_level_scene(level_id: int) -> void:
 		if _level_cfg.is_empty():
 			_level_cfg = LevelData.get_level(1)
 
-	# Create TileCut dynamically (always starts empty)
+	# Create TileCut dynamically (always starts empty).
+	# Lấy scale/position từ Border (terrain hiển thị) để ô cắt khớp với
+	# terrain, trail và player. Fallback sang Active nếu không có Border.
 	_tm_cut = TileMapLayer.new()
 	_tm_cut.name = "TileCut"
-	if _tm_active != null:
-		_tm_cut.tile_set = _tm_active.tile_set
-		_tm_cut.scale = _tm_active.scale
+	var ref_layer: TileMapLayer = _tm_border if _tm_border != null else _tm_active
+	if ref_layer != null:
+		_tm_cut.tile_set = ref_layer.tile_set
+		_tm_cut.scale = ref_layer.scale
+		_tm_cut.position = ref_layer.position
 	else:
 		_tm_cut.scale = Vector2(1.5, 1.5)
 	_grid.add_child(_tm_cut)
@@ -161,12 +175,19 @@ func _setup_grid() -> void:
 	_grid.position = _level_cfg.get("grid_position", Vector2.ZERO)
 	_player.setup(_grid, _player.spawn_grid_pos.x, _player.spawn_grid_pos.y)
 
+func _on_settings_pressed() -> void:
+	if _game_over:
+		return
+	AudioManager.play_click()
+	_open_settings(true)
+
 func _open_settings(pause_game: bool) -> void:
 	if _settings_ui and is_instance_valid(_settings_ui):
 		return
 	var menu := _SETTINGS_SCENE.instantiate()
 	menu.pause_game = pause_game
-	add_child(menu)
+	# Thêm vào CanvasLayer UI để settings vẽ đè lên HUD (timer, tim, nút setting)
+	$UI.add_child(menu)
 	_settings_ui = menu
 	menu.closed.connect(func(): _settings_ui = null)
 
@@ -475,6 +496,18 @@ func _go_result(won: bool) -> void:
 	GameState.set_meta("last_stars", _stars_collected)
 	get_tree().change_scene_to_file("res://scenes/ResultScreen.tscn")
 
+func _on_time_up() -> void:
+	if _game_over:
+		return
+	_game_over = true
+	_player.alive = false
+	_grid.clear_trail()
+	AudioManager.play_die()
+	_elapsed = _time_limit
+	_update_hud()
+	await get_tree().create_timer(0.8).timeout
+	_go_result(false)
+
 # ── Main loop ─────────────────────────────────────────────────────────
 
 func _process(delta: float) -> void:
@@ -482,6 +515,9 @@ func _process(delta: float) -> void:
 		return
 
 	_elapsed += delta
+	if _elapsed >= _time_limit:
+		_on_time_up()
+		return
 
 	_item_timer -= delta
 	if _item_timer <= 0.0:
@@ -530,9 +566,14 @@ func _process(delta: float) -> void:
 		_toggle_pause()
 
 func _update_hud() -> void:
-	var m := int(_elapsed / 60)
-	var s := int(_elapsed) % 60
+	var remaining: float = max(0.0, _time_limit - _elapsed)
+	var m := int(remaining / 60)
+	var s := int(remaining) % 60
 	_timer_label.text  = "TIME  %02d:%02d" % [m, s]
+	if remaining <= 10.0:
+		_timer_label.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3))
+	else:
+		_timer_label.remove_theme_color_override("font_color")
 	#_stars_label.text  = "STARS  %d/%d" % [_stars_collected, TOTAL_STARS]
 	_heart1.texture = _HEART_FULL if _lives >= 1 else _HEART_EMPTY
 	_heart2.texture = _HEART_FULL if _lives >= 2 else _HEART_EMPTY

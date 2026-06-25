@@ -19,6 +19,13 @@ var _bgm_pos:  int = 0
 var _bgm_use_file: bool = false
 var _bgm_current_id: String = ""
 
+# ── Ducking BGM khi phát stinger thắng/thua ───────────────────────────────────
+const DUCK_DB        := -16.0   # mức hạ âm lượng nhạc nền khi duck
+const DUCK_FADE_DOWN := 0.15    # thời gian hạ nhỏ (giây)
+const DUCK_HOLD      := 1.0     # giữ nhỏ trong lúc SFX chạy (giây)
+const DUCK_FADE_UP   := 1.6     # thời gian to dần trở lại (giây)
+var _duck_tween: Tween = null
+
 # ── SFX player (procedural) ───────────────────────────────────────────────────
 var _sfx_node: AudioStreamPlayer
 var _sfx_gen:  AudioStreamGenerator
@@ -29,6 +36,8 @@ var _sfx_pool: Array[AudioStreamPlayer] = []
 const SFX_POOL_SIZE := 8
 
 func _ready() -> void:
+	# Nhạc/âm thanh vẫn chạy khi game bị pause (vd: mở Settings).
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_load_db()
 
 	# ── SFX procedural player ─────────────────────────────────────────
@@ -122,6 +131,23 @@ func play_bgm(id: StringName) -> void:
 func stop_bgm() -> void:
 	_bgm_node.stop()
 	_bgm_current_id = ""
+
+# Âm lượng nhạc nền chuẩn theo Settings (mức để khôi phục sau khi duck).
+func _bgm_base_db() -> float:
+	var s := get_node_or_null("/root/Settings") as Settings
+	return s.get_music_db() if s else -10.0
+
+# Hạ nhỏ nhạc nền, giữ một lúc rồi to dần trở lại (dùng cho stinger thắng/thua).
+func duck_bgm(hold: float = DUCK_HOLD) -> void:
+	if _bgm_node == null:
+		return
+	var base := _bgm_base_db()
+	if _duck_tween != null and _duck_tween.is_valid():
+		_duck_tween.kill()
+	_duck_tween = create_tween()
+	_duck_tween.tween_property(_bgm_node, "volume_db", base + DUCK_DB, DUCK_FADE_DOWN)
+	_duck_tween.tween_interval(hold)
+	_duck_tween.tween_property(_bgm_node, "volume_db", base, DUCK_FADE_UP)
 
 func _start_default_bgm() -> void:
 	var entry := get_bgm_entry(AudioDatabase.BGM_MAIN)
@@ -303,12 +329,14 @@ func play_die() -> void:
 		await get_tree().create_timer(0.08).timeout
 
 func play_win() -> void:
+	duck_bgm()
 	if get_sfx_entry(AudioDatabase.SFX_WIN): play_sfx(AudioDatabase.SFX_WIN); return
 	for f in [523.0, 659.0, 784.0, 1047.0, 1319.0]:
 		_sfx_note(f, 0.10, 0.60, 0)
 		await get_tree().create_timer(0.09).timeout
 
 func play_lose() -> void:
+	duck_bgm()
 	if get_sfx_entry(AudioDatabase.SFX_LOSE): play_sfx(AudioDatabase.SFX_LOSE); return
 	for f in [392.0, 349.0, 311.0, 261.0]:
 		_sfx_note(f, 0.13, 0.70, 1)

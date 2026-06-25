@@ -117,11 +117,23 @@ text = "FULL SCREEN"
 [node name="FullscreenCheck" type="CheckBox" parent="Card/Content/FullscreenRow"]
 layout_mode = 2
 
-[node name="BackBtn" type="Button" parent="Card/Content"]
-custom_minimum_size = Vector2(150, 56)
+[node name="ButtonRow" type="HBoxContainer" parent="Card/Content"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="MenuBtn" type="Button" parent="Card/Content/ButtonRow"]
+custom_minimum_size = Vector2(150, 56)
+layout_mode = 2
 theme = ExtResource("2_theme")
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 32
+text = "MENU"
+
+[node name="BackBtn" type="Button" parent="Card/Content/ButtonRow"]
+custom_minimum_size = Vector2(150, 56)
+layout_mode = 2
+theme = ExtResource("2_theme")
+theme_override_font_sizes/font_size = 32
 text = "BACK"

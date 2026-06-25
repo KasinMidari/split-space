@@ -164,7 +164,7 @@ animations = [{
 
 [node name="Player" type="Node2D"]
 script = ExtResource("1_4kuee")
-spawn_grid_pos = Vector2i(2, 9)
+spawn_grid_pos = Vector2i(1, 12)
 
 [node name="States" type="Node" parent="."]
 

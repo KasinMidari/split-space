@@ -13,6 +13,8 @@ extends Node
 		_auto_regen()
 @export var items: Array[String] = []
 @export var item_interval: float = 18.0
+# Tổng thời gian (giây) để hoàn thành màn. Hết giờ chưa thắng = thua.
+@export var time_limit: float = 90.0
 
 # (0,0) = auto-center at runtime. Set manually or click button below.
 @export var grid_position: Vector2 = Vector2.ZERO
@@ -43,6 +45,7 @@ func to_dict() -> Dictionary:
 		"rows": rows,
 		"items": items,
 		"item_interval": item_interval,
+		"time_limit": time_limit,
 		"grid_position": grid_position,
 	}
 

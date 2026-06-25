@@ -12,6 +12,7 @@ cols = 26
 rows = 18
 items = Array[String](["invincibility", "speed", "freeze"])
 item_interval = 10.0
+time_limit = 120.0
 
 [node name="Water" type="TileMapLayer" parent="."]
 z_index = -10
