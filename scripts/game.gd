@@ -303,7 +303,7 @@ func _on_trail_closed() -> void:
 		if not is_instance_valid(e) or not e.alive:
 			continue
 		var gp = e.get_grid_pos()
-		var enclosed = _grid.is_enemy_enclosed(gp)
+		var enclosed := _grid.is_enemy_enclosed(gp)
 		if not enclosed and cut_cells.size() > 0:
 			enclosed = cut_cells.size() > _grid.get_connected_active_size(gp)
 		if not enclosed:
