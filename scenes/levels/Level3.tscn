@@ -12,6 +12,7 @@ cols = 24
 rows = 16
 items = Array[String](["invincibility", "speed", "freeze"])
 item_interval = 12.0
+time_limit = 110.0
 
 [node name="Water" type="TileMapLayer" parent="."]
 z_index = -10
@@ -40,7 +41,7 @@ tile_map_data = PackedByteArray("AAACAAwABgAGAAQAAAADAA0ABgAFAAQAAAACAAQABgAFAAM
 tile_set = ExtResource("2_map")
 
 [node name="BasicEnemy" parent="." instance=ExtResource("3_g0tkw")]
-position = Vector2(574, 422)
+position = Vector2(605, 433)
 speed = 50.0
 
 [node name="BasicEnemy2" parent="." instance=ExtResource("3_g0tkw")]
@@ -48,11 +49,11 @@ position = Vector2(236, 160)
 speed = 50.0
 
 [node name="ShooterEnemy" parent="." instance=ExtResource("4_3825t")]
-position = Vector2(223, 345)
+position = Vector2(238, 367)
 speed = 50.0
 
 [node name="ShooterEnemy2" parent="." instance=ExtResource("4_3825t")]
 position = Vector2(555, 163)
 
 [node name="BasicEnemy3" parent="." instance=ExtResource("3_g0tkw")]
-position = Vector2(320, 393)
+position = Vector2(267, 461)

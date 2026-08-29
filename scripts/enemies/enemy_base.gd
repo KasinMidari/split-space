@@ -78,9 +78,8 @@ func _tick_alive(delta: float) -> void:
 		return
 	if not alive:
 		return
-	# Die if standing on a cut tile (e.g. trail converted to CUT under enemy)
 	var gp := get_grid_pos()
-	if _gm.get_tile(gp.x, gp.y) == GridManager.T_CUT:
+	if _should_bounce(GridManager.T_CUT) and _gm.get_tile(gp.x, gp.y) == GridManager.T_CUT:
 		die()
 		return
 	_move(delta)

@@ -1,9 +1,10 @@
-[gd_resource type="Theme" load_steps=27 format=3 uid="uid://dg1kd57cqhexk"]
+[gd_resource type="Theme" load_steps=30 format=3 uid="uid://dg1kd57cqhexk"]
 
 [ext_resource type="Texture2D" uid="uid://dbcyy4k2mxixy" path="res://assets/ui/Icons/All Icons.png" id="2_2l2ys"]
 [ext_resource type="FontFile" uid="uid://0ui1lw5xs3cv" path="res://assets/ui/font/pixelFont-7-8x14-sproutLands.ttf" id="2_pd6sc"]
 [ext_resource type="Texture2D" uid="uid://dp8m6ub8so4sw" path="res://assets/ui/buttons/Square Buttons 26x26.png" id="3_jvwys"]
 [ext_resource type="Texture2D" uid="uid://btfp32nufg6f" path="res://assets/ui/UI Settings Buttons.png" id="4_mfn8g"]
+[ext_resource type="Texture2D" uid="uid://dyo8whewtdn16" path="res://assets/ui/Sprite sheet for Basic Pack.png" id="5_jvwys"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_1fvms"]
 load_path = "res://.godot/imported/UI Big Play Button.png-43e8f0d2a215e1c2d88eb1e4057341fd.ctex"
@@ -102,6 +103,18 @@ texture = SubResource("AtlasTexture_jd20g")
 texture_margin_left = 20.0
 texture_margin_right = 20.0
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_mfn8g"]
+atlas = ExtResource("5_jvwys")
+region = Rect2(456, 138, 30, 30)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4nb47"]
+texture = SubResource("AtlasTexture_mfn8g")
+texture_margin_left = 12.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 6.0
+expand_margin_bottom = 4.0
+
 [resource]
 default_font = ExtResource("2_pd6sc")
 Button/colors/font_color = Color(0.713726, 0.537255, 0.384314, 1)
@@ -126,3 +139,4 @@ HSlider/icons/grabber_disabled = SubResource("AtlasTexture_a4axt")
 HSlider/icons/grabber_highlight = SubResource("AtlasTexture_stq8r")
 HSlider/styles/grabber_area = SubResource("StyleBoxTexture_dy1wi")
 HSlider/styles/slider = SubResource("StyleBoxTexture_ocp23")
+PanelContainer/styles/panel = SubResource("StyleBoxTexture_4nb47")

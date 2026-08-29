@@ -10,6 +10,7 @@ level_name = "Level 2 - Nóng dần"
 cols = 22
 rows = 16
 item_interval = 14.0
+time_limit = 100.0
 
 [node name="Water" type="TileMapLayer" parent="."]
 z_index = -10

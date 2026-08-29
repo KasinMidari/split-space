@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://game001scene"]
+[gd_scene load_steps=11 format=3 uid="uid://game001scene"]
 
 [ext_resource type="Script" uid="uid://b16xx0fm3rq4y" path="res://scripts/game.gd" id="1_game"]
 [ext_resource type="Script" uid="uid://celava7d20ycm" path="res://scripts/grid_manager.gd" id="2_grid"]
@@ -6,6 +6,7 @@
 [ext_resource type="Theme" uid="uid://dg1kd57cqhexk" path="res://game_theme.tres" id="5_theme"]
 [ext_resource type="Texture2D" uid="uid://ddtl0n04hjhsn" path="res://assets/ui/Setting menu.png" id="6_aug50"]
 [ext_resource type="Texture2D" uid="uid://dvkodgi53uind" path="res://assets/ui/Heart_Full_64.png" id="7_hfull"]
+[ext_resource type="Texture2D" uid="uid://dbcyy4k2mxixy" path="res://assets/ui/Icons/All Icons.png" id="7_kiw3p"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kiw3p"]
 atlas = ExtResource("6_aug50")
@@ -17,6 +18,10 @@ content_margin_top = 4.0
 content_margin_right = 4.0
 content_margin_bottom = 4.0
 texture = SubResource("AtlasTexture_kiw3p")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_400sg"]
+atlas = ExtResource("7_kiw3p")
+region = Rect2(50, 2, 12, 12)
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_game")
@@ -122,9 +127,9 @@ text = "RESUME"
 
 [node name="HeartsContainer" type="HBoxContainer" parent="UI/HUD"]
 layout_mode = 0
-offset_left = 688.0
+offset_left = 627.0
 offset_top = 8.0
-offset_right = 805.0
+offset_right = 744.0
 offset_bottom = 42.0
 
 [node name="Heart1" type="TextureRect" parent="UI/HUD/HeartsContainer"]
@@ -143,4 +148,13 @@ stretch_mode = 4
 layout_mode = 2
 texture = ExtResource("7_hfull")
 expand_mode = 2
+stretch_mode = 4
+
+[node name="SettingsBtn" type="TextureButton" parent="UI/HUD"]
+layout_mode = 0
+offset_left = 774.0
+offset_top = 14.0
+offset_right = 801.0
+offset_bottom = 40.0
+texture_normal = SubResource("AtlasTexture_400sg")
 stretch_mode = 4

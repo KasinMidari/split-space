@@ -28,18 +28,3 @@ func _try_restore() -> void:
 
 func _should_bounce(t: int) -> bool:
 	return t == GridManager.T_BORDER
-
-func _draw() -> void:
-	if dying:
-		_draw_dying()
-		return
-	var h := _tile_size * 0.38
-	var col := color_frozen if frozen else color_body
-	draw_rect(Rect2(-h, -h, h * 2, h * 2), col)
-	draw_rect(Rect2(-h + 3, -h + 3, (h - 3) * 2, (h - 3) * 2),
-			  Color(col.r * color_inner.r, col.g * color_inner.g, col.b * color_inner.b, col.a * (1.0 - color_inner.a) + color_inner.a))
-	draw_rect(Rect2(-h, -h, h * 2, h * 2), col.lightened(0.4), false, 1.5)
-	var t := fmod(Time.get_ticks_msec() * 0.002, TAU)
-	for i in range(4):
-		var a := t + i * TAU * 0.25
-		draw_line(Vector2.ZERO, Vector2(cos(a), sin(a)) * (h - 2), color_spin, 1.5)

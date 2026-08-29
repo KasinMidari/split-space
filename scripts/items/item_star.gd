@@ -29,18 +29,3 @@ func _process(delta: float) -> void:
 	_spin += delta * 2.0
 	_bob += delta * 3.0
 	queue_redraw()
-
-func _draw() -> void:
-	if not alive:
-		return
-	var bob_off := sin(_bob) * 3.0
-	var outer := 10.0
-	var inner := 4.5
-	var pts: PackedVector2Array = PackedVector2Array()
-	for i in range(10):
-		var angle := _spin + i * TAU / 10.0 - TAU / 4.0
-		var r := outer if i % 2 == 0 else inner
-		pts.append(Vector2(cos(angle), sin(angle) + bob_off / outer) * r)
-	draw_colored_polygon(pts, Color(1.0, 0.88, 0.1))
-	draw_polyline(pts + PackedVector2Array([pts[0]]), Color(1.0, 0.65, 0.0, 0.7), 1.0)
-	draw_circle(Vector2(0, bob_off), 3.0, Color(1.0, 1.0, 0.7, 0.5))

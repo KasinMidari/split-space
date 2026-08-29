@@ -12,6 +12,7 @@ signal hit()
 
 @export var base_speed: float = 7.0  # tiles/second
 @export var spawn_grid_pos: Vector2i = Vector2i(1, 0)
+@export var hurt_duration: float = 2.0
 
 var grid_pos: Vector2 = Vector2(1, 0)
 var alive: bool = true
@@ -32,6 +33,7 @@ var direction: Vector2i = Vector2i(0, 1)
 @onready var _states: Node = get_node_or_null("States")
 @onready var _state_idle: FSMState = get_node_or_null("States/Idle")
 @onready var _state_dead: FSMState = get_node_or_null("States/Dead")
+@onready var _state_hurt: FSMState = get_node_or_null("States/Hurt")
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 func _ready() -> void:
@@ -100,9 +102,12 @@ func kill() -> void:
 func take_hit() -> void:
 	if is_invincible:
 		return
-	is_cutting = false
-	apply_invincibility(3.0)
 	emit_signal("hit")
+	if fsm != null and _state_hurt != null:
+		fsm.change_state(_state_hurt)
+	else:
+		is_cutting = false
+		apply_invincibility(hurt_duration)
 
 func _process(delta: float) -> void:
 	if fsm != null:
@@ -111,6 +116,7 @@ func _process(delta: float) -> void:
 	_tick_timers(delta)
 	_tick_movement(delta)
 	_update_visual(delta)
+	print(global_position)
 
 func _tick_timers(delta: float) -> void:
 	if _gm == null:
