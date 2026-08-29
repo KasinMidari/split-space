@@ -1,6 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://3ku8njvu0aii"]
+[gd_scene load_steps=4 format=3 uid="uid://3ku8njvu0aii"]
 
 [ext_resource type="Script" uid="uid://8pim5brocf1p" path="res://scripts/items/item_freeze.gd" id="1_freeze"]
+[ext_resource type="Texture2D" uid="uid://ddivlcdu01ltl" path="res://assets/ui/Emoji_Spritesheet_Free.png" id="2_vlr4j"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f6s2w"]
+atlas = ExtResource("2_vlr4j")
+region = Rect2(64, 382, 32, 34)
 
 [node name="ItemFreeze" type="Node2D"]
 script = ExtResource("1_freeze")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+modulate = Color(0, 0.176471, 0, 0.270588)
+position = Vector2(2, 2)
+texture = SubResource("AtlasTexture_f6s2w")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_f6s2w")
