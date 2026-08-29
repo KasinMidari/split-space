@@ -1,7 +1,7 @@
 extends Control
 
 @onready var _result_label: Label = $ResultLabel
-@onready var _stars_label: Label  = $ButtonBox/StarsLabel
+@onready var _stars_box: HBoxContainer = $ButtonBox/StarsBox
 @onready var _time_label: Label   = $ButtonBox/TimeLabel
 @onready var _best_label: Label   = $ButtonBox/BestLabel
 @onready var _next_btn: Button    = $ButtonBox/NextBtn
@@ -16,9 +16,11 @@ func _ready() -> void:
 
 	_result_label.text = "YOU WIN!" if won else "GAME OVER"
 
-	var star_str := "★".repeat(stars) + "☆".repeat(max(0, 3 - stars))
-	_stars_label.text = star_str
-	_stars_label.visible = won
+	# Sao đạt được sáng bình thường, sao thiếu tô tối lại
+	for i in range(_stars_box.get_child_count()):
+		var star := _stars_box.get_child(i) as TextureRect
+		star.modulate = Color.WHITE if i < stars else Color(0.25, 0.25, 0.3, 0.9)
+	_stars_box.visible = won
 
 	var m := int(elapsed / 60)
 	var s := int(elapsed) % 60
