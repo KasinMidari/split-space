@@ -2,9 +2,10 @@ extends Node2D
 
 const MAX_ITEMS_ALIVE := 3
 const TOTAL_STARS := 3
-# Vùng ruột bị bao phải đạt tối thiểu bấy nhiêu ô mỗi chiều mới được cắt.
-# Tăng lên 3 nếu muốn chặn cả dải dày 2 ô.
-const MIN_CUT_SIZE := 2
+# Vùng đất bắt được phải đạt tối thiểu bấy nhiêu Ô (diện tích) mới được cắt.
+# Dùng diện tích thay vì bounding box để hành lang hẹp 1 ô do terrain tạo ra
+# vẫn cắt được, nhưng vẫn chặn cú "quẹt qua lại" chỉ bắt 1-2 ô rác.
+const MIN_CUT_AREA := 4
 const LEVEL_SCENE_BASE := "res://scenes/levels/Level%d.tscn"
 
 const _PROJECTILE     := preload("res://scenes/Projectile.tscn")
@@ -15,6 +16,7 @@ const _ITEM_SPEED     := preload("res://scenes/items/ItemSpeed.tscn")
 const _ITEM_FREEZE    := preload("res://scenes/items/ItemFreeze.tscn")
 const _ITEM_STAR      := preload("res://scenes/items/ItemStar.tscn")
 const _SETTINGS_SCENE := preload("res://scenes/Settings.tscn")
+const _TUTORIAL_SCENE := preload("res://scenes/UI/TutorialOverlay.tscn")
 
 var _level_cfg: Dictionary = {}
 var _level_spawns: Array = []
@@ -67,6 +69,9 @@ func _ready() -> void:
 	start_level(GameState.current_level)
 
 func start_level(level_id: int) -> void:
+	# Level 1 luôn chơi lại tutorial từ đầu (intro + mọi hint tình huống)
+	if level_id == 1:
+		GameState.reset_tutorial()
 	_free_level_tilemaps()
 	_load_level_scene(level_id)
 	_lives = 3
@@ -81,6 +86,7 @@ func start_level(level_id: int) -> void:
 	_game_over = false
 	_paused_internal = false
 	_update_hud()
+	_maybe_show_tutorial(level_id)
 
 func _free_level_tilemaps() -> void:
 	for tm in ([_tm_border, _tm_active, _tm_cut] as Array) + _tm_decorations:
@@ -260,6 +266,13 @@ func _rvel(spd: float) -> Vector2:
 
 func _on_trail_started(gx: int, gy: int) -> void:
 	_grid.start_trail(gx, gy)
+	var ts := float(_grid.tile_size)
+	var pr := _world_rect(_player.global_position, ts * 1.5)
+	_show_hint("first_trail", [
+		{"target_rect": pr, "text": "You are drawing a trail!"},
+		{"target_rect": pr, "text": "Return to land to claim the area."},
+		{"target_rect": pr, "text": "Touching your own trail costs a life!"},
+	])
 
 func _on_trail_extended(gx: int, gy: int) -> void:
 	_grid.extend_trail(gx, gy)
@@ -276,13 +289,18 @@ func _on_trail_closed() -> void:
 		_grid.clear_trail()
 		return
 
-	# Khi cú cắt KHÔNG giết enemy nào: chặn nếu vùng cắt quá mỏng (một chiều
-	# < MIN_CUT_SIZE). Vùng cắt = đất bắt được; nếu không bắt đất nào thì xét
-	# chính đường trail (vd kẻ thẳng ra biên tạo dải rộng/cao 1 ô).
+	# Khi cú cắt KHÔNG giết enemy nào: chặn nếu tổng đất bắt được quá nhỏ
+	# (< MIN_CUT_AREA ô). Nếu không bắt được đất nào (vd kẻ thẳng ra biên)
+	# thì xét bounding box của chính đường trail để chặn dải rộng/cao 1 ô.
 	# Nếu có giết enemy (enclosed_count >= 1) thì luôn cho cắt.
 	if enclosed_count == 0:
-		var cut_size: Vector2i = _grid.preview_cut_size(ep)
-		if cut_size.x < MIN_CUT_SIZE or cut_size.y < MIN_CUT_SIZE:
+		var cut_area: int = _grid.preview_cut_area(ep)
+		if cut_area == 0:
+			var tb: Vector2i = _grid.trail_bbox_size()
+			if tb.x < 2 or tb.y < 2:
+				_grid.clear_trail()
+				return
+		elif cut_area < MIN_CUT_AREA:
 			_grid.clear_trail()
 			return
 
@@ -328,6 +346,13 @@ func _on_trail_closed() -> void:
 
 	_check_win()
 
+	if cut_cells.size() > 0 and not _game_over:
+		var pr := _world_rect(_player.global_position, float(_grid.tile_size) * 1.5)
+		_show_hint("first_cut", [
+			{"target_rect": pr, "text": "Nice! You claimed your first area."},
+			{"target_rect": pr, "text": "Trap monsters in small areas!"},
+		])
+
 func _is_enemy_isolated(enemy: Node, gp: Vector2i) -> bool:
 	if _grid.get_tile(gp.x, gp.y) != GridManager.T_ACTIVE:
 		return false
@@ -348,9 +373,12 @@ func _is_enemy_isolated(enemy: Node, gp: Vector2i) -> bool:
 	return true
 
 func _on_self_intersect() -> void:
-	if not _player.is_invincible:
-		_grid.clear_trail()
-		_player.is_cutting = false
+	if _player.is_invincible:
+		return
+	# Chạm vào chính đường trail đang vẽ → mất 1 mạng (như bị enemy chạm).
+	# take_hit phát signal hit → _on_player_hit xóa trail và trừ mạng.
+	_player.is_cutting = false
+	_player.take_hit()
 
 func _on_player_hit() -> void:
 	if _game_over:
@@ -359,6 +387,12 @@ func _on_player_hit() -> void:
 	_grid.clear_trail()
 	_lives -= 1
 	_update_hud()
+	if _lives > 0:
+		var hearts_rect := _heart1.get_global_rect().merge(_heart3.get_global_rect()).grow(6.0)
+		_show_hint("first_hit", [
+			{"target_rect": hearts_rect, "text": "Ouch! You lost a life."},
+			{"target_rect": hearts_rect, "text": "Lose all 3 and it's game over!"},
+		])
 	if _lives <= 0:
 		_game_over = true
 		_player.alive = false
@@ -427,6 +461,12 @@ func _try_spawn_item() -> void:
 	item.position = Vector2(_wx(gp.x), _wy(gp.y))
 	item.collected.connect(_on_item_collected)
 	_items.append(item)
+	_show_hint("first_item", [
+		{"target_rect": _world_rect(item.position, float(_grid.tile_size) * 1.2),
+			"text": "An item appeared!"},
+		{"target_rect": _world_rect(item.position, float(_grid.tile_size) * 1.2),
+			"text": "Grab it for a power-up."},
+	])
 
 func _find_item_pos() -> Vector2i:
 	var c: int = _grid.cols
@@ -541,6 +581,8 @@ func _process(delta: float) -> void:
 	if not _player.alive:
 		return
 
+	_check_contextual_hints()
+
 	for star in _stars.duplicate():
 		if is_instance_valid(star):
 			star.check_collect(_player.position)
@@ -598,6 +640,87 @@ func _update_hud() -> void:
 	if _player.speed_multiplier > 1.0:
 		fx.append("FAST %.1fs" % _player._spd_timer)
 	_effect_label.text = "  ".join(fx)
+
+# ── Tutorial ─────────────────────────────────────────────────────────
+# Intro ngắn lúc vào Level 1 lần đầu; phần còn lại là hint theo tình huống:
+# hiện đúng lúc tình huống đó xảy ra lần đầu (mỗi hint chỉ 1 lần, lưu vào save).
+
+var _tutorial_active: bool = false
+
+func _maybe_show_tutorial(level_id: int) -> void:
+	if level_id != 1 or GameState.is_tutorial_seen():
+		return
+	# Đợi 1 frame để player/enemy/star/HUD đã vào cây và có vị trí đúng
+	await get_tree().process_frame
+	if _game_over:
+		return
+	var ts := float(_grid.tile_size)
+	var steps: Array = []
+	var player_rect := _world_rect(_player.global_position, ts * 1.5)
+	steps.append({"target_rect": player_rect, "text": "This is you!"})
+	steps.append({"target_rect": player_rect, "text": "Move with the arrow keys."})
+	steps.append({"target_rect": player_rect, "text": "You are safe on land."})
+	steps.append({
+		"target_rect": _world_rect(_grid.global_position + _grid.total_pixel_size() * 0.5, ts * 3.5),
+		"text": "Enter the island to draw a trail.",
+	})
+	_show_tutorial(steps, func(): GameState.mark_tutorial_seen())
+
+# Hiện hint theo tình huống, chỉ 1 lần duy nhất cho mỗi id.
+func _show_hint(id: String, steps: Array) -> void:
+	if GameState.is_hint_seen(id) or _tutorial_active or _game_over:
+		return
+	GameState.mark_hint_seen(id)
+	_show_tutorial(steps)
+
+func _show_tutorial(steps: Array, on_done: Callable = Callable()) -> void:
+	if _tutorial_active or steps.is_empty():
+		return
+	_tutorial_active = true
+	var ov: TutorialOverlay = _TUTORIAL_SCENE.instantiate()
+	add_child(ov)
+	get_tree().paused = true
+	ov.finished.connect(func():
+		get_tree().paused = false
+		_tutorial_active = false
+		if on_done.is_valid():
+			on_done.call())
+	ov.run(steps)
+
+# Gọi mỗi frame: hint cho tình huống phát hiện bằng khoảng cách (enemy/sao tới gần)
+func _check_contextual_hints() -> void:
+	var ts := float(_grid.tile_size)
+	if not GameState.is_hint_seen("enemy_near"):
+		for e in _enemies:
+			if is_instance_valid(e) and e.alive \
+					and e.pixel_pos.distance_to(_player.position) < ts * 4.0:
+				var enemy_rect := _world_rect(e.pixel_pos, ts * 1.5)
+				_show_hint("enemy_near", [
+					{"target_rect": enemy_rect, "text": "Watch out for monsters!"},
+					{"target_rect": enemy_rect, "text": "Don't let them touch your trail."},
+					{"target_rect": enemy_rect, "text": "Enclose them to destroy them!"},
+				])
+				return
+	if not GameState.is_hint_seen("star_near"):
+		for s in _stars:
+			if is_instance_valid(s) and s.global_position.distance_to(_player.position) < ts * 3.0:
+				_show_hint("star_near", [
+					{"target_rect": _world_rect(s.global_position, ts * 1.2),
+						"text": "Collect stars for a higher rating!"},
+				])
+				return
+	if not GameState.is_hint_seen("time_low") and _time_limit - _elapsed <= 15.0:
+		_show_hint("time_low", [
+			{"target_rect": _timer_label.get_global_rect().grow(6.0),
+				"text": "Hurry! Time is almost up!"},
+		])
+
+# Đổi rect quanh 1 điểm world (Node2D) sang tọa độ màn hình cho overlay UI.
+func _world_rect(center: Vector2, half: float) -> Rect2:
+	var xf := get_viewport().get_canvas_transform()
+	var tl: Vector2 = xf * (center - Vector2(half, half))
+	var br: Vector2 = xf * (center + Vector2(half, half))
+	return Rect2(tl, br - tl)
 
 func _toggle_pause() -> void:
 	_paused_internal = not _paused_internal

@@ -41,31 +41,31 @@ tile_map_data = PackedByteArray("AAACAAwABgAGAAQAAAADAA0ABgAFAAQAAAACAAQABgAFAAM
 tile_set = ExtResource("2_map")
 
 [node name="BasicEnemy" parent="." instance=ExtResource("3_nanwd")]
-position = Vector2(192, 214)
+position = Vector2(188, 143)
 speed = 50.0
 
 [node name="BasicEnemy2" parent="." instance=ExtResource("3_nanwd")]
-position = Vector2(361, 460)
+position = Vector2(354, 461)
 speed = 50.0
 
 [node name="BasicEnemy4" parent="." instance=ExtResource("3_nanwd")]
-position = Vector2(500, 242)
+position = Vector2(471, 229)
 speed = 50.0
 
 [node name="BasicEnemy5" parent="." instance=ExtResource("3_nanwd")]
-position = Vector2(200, 410)
+position = Vector2(221, 415)
 speed = 50.0
 
 [node name="ShooterEnemy" parent="." instance=ExtResource("4_v7du0")]
-position = Vector2(280, 407)
+position = Vector2(550, 422)
 speed = 40.0
 
 [node name="ShooterEnemy5" parent="." instance=ExtResource("4_v7du0")]
-position = Vector2(605, 267)
+position = Vector2(610, 281)
 speed = 40.0
 
 [node name="ShooterEnemy2" parent="." instance=ExtResource("4_v7du0")]
-position = Vector2(296, 286)
+position = Vector2(319, 156)
 speed = 40.0
 
 [node name="ShooterEnemy3" parent="." instance=ExtResource("4_v7du0")]
