@@ -65,7 +65,7 @@ script = ExtResource("3_frozen")
 script = ExtResource("4_dying")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -18)
-scale = Vector2(1.375, 1.375)
+position = Vector2(2, -26)
+scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_8bkml")
 autoplay = "default"
